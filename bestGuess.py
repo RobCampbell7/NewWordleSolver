@@ -13,6 +13,26 @@ def maxFromDict(d):
             maxItem = item
     return maxItem
 
+def makeGuess(answer, guess):
+    green = ""
+    yellow = ""
+    grey = ""
+    for i in range(5):
+        if answer[i] == guess[i]:
+            green += answer[i]
+        else:
+            green += "."
+        if guess[i] not in answer:
+            grey += guess[i]
+    lettersToFind = [answer[i] for i in range(5) if green[i] == "."]
+    for i in range(5):
+        if green[i] == "." and guess[i] in lettersToFind:
+            yellow += guess[i]
+            lettersToFind.remove(guess[i])
+        else:
+            yellow += "."
+    return green, yellow, grey
+
 def knownFilter(word, green=".....", yellow=".....", grey = ""):
     for i in range(5):
         if green[i] != ".":
