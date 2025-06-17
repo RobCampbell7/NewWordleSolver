@@ -1,52 +1,24 @@
-LETTERS = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
 WORDS = []
 with open("possibleWords.txt", "r") as guessesFile:
     for li in guessesFile.readlines():
         WORDS.append(li.replace("\n", ""))
 
-GREEN_WEIGHT = 0.396
-GREEN_WEIGHT = 1.0
-YELLOW_WEIGHT = 1.0
+WORDSPROB = {}
+N = len(WORDS)
+x = 1/N
+for w in WORDS:
+    WORDSPROB[w] = x
 
-yellowCounts = [0 for i in range(26)]
-greenCounts = [[0 for i in range(26)] for i in range(5)]
-for word in WORDS:
-    for lPos in range(5):
-        yellowCounts[LETTERS.index(word[lPos])] += 1
-        greenCounts[lPos][LETTERS.index(word[lPos])] += 1
-
-yellowMin = min(yellowCounts)
-yellowMax = max(yellowCounts)
-greenMin = min([min(row) for row in greenCounts])
-greenMax = max([max(row) for row in greenCounts])
-
+# Keeping some functions from the old version, may come in handy
 def normalise(x, lowerBound, upperBound):
     return (x - lowerBound) / (upperBound - lowerBound)
 
-YELLOW_SCORES = [normalise(value, yellowMin, yellowMax) for value in yellowCounts]
-GREEN_SCORES = [[normalise(value, greenMin, greenMax) for value in row] for row in greenCounts]
-
-WORD_SCORES = {}
-for word in WORDS:
-    WORD_SCORES[word] =  0
-    foundLetter = []
-    for lPos in range(5):
-        WORD_SCORES[word] += GREEN_WEIGHT * GREEN_SCORES[lPos][LETTERS.index(word[lPos])]
-        if word[lPos] not in foundLetter:
-            WORD_SCORES[word] += YELLOW_WEIGHT * YELLOW_SCORES[LETTERS.index(word[lPos])]
-            foundLetter.append(word[lPos])
-
-WORDS.sort(key=lambda w : WORD_SCORES[w], reverse=True)
-
-def normalise(x, lowerBound, upperBound):
-    return (x - lowerBound) / (upperBound - lowerBound)
-
-def maxIndex(lst, ignoreIndexes=[]):
-    """
-    Returns the index of the maximum value in the list
-    """
-    indexLst = [i for i in range(len(lst)) if i not in ignoreIndexes]
-    return max(indexLst, key=lst.__getitem__)
+def maxFromDict(d):
+    maxItem = None
+    for item in d.keys():
+        if maxItem == None or d[item] > d[maxItem]:
+            maxItem = item
+    return maxItem
 
 def knownFilter(word, green=".....", yellow=".....", grey = ""):
     for i in range(5):
@@ -74,20 +46,6 @@ def knownFilter(word, green=".....", yellow=".....", grey = ""):
         if word[i] != "." and word[i] in grey:
             return False
     return True
-    
-def combine(str1, str2):
-    newStr = ""
-    for i in range(5):
-        if str1[i] != ".":
-            newStr += str1[i]
-        elif str2[i] != ".":
-            newStr += str2[i]
-        else:
-            newStr += "."
-    return newStr
-
-def maintainSet(setStr, newStr):
-    return setStr.extend([char for char in newStr if char not in setStr])
 
 def remove(string, char):
     newString = ""
