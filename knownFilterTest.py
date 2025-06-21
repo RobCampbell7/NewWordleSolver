@@ -1,26 +1,3 @@
-from functools import cache
-import random
-
-def maxIndex(lst, ignoreIndexes=[]):
-    """
-    Returns the index of the maximum value in the list
-    """
-    indexLst = [i for i in range(len(lst)) if i not in ignoreIndexes]
-    return max(indexLst, key=lst.__getitem__)
-
-def minIndex(lst, ignoreIndexes=[]):
-    """
-    Returns the index of the maximum value in the list
-    """
-    indexLst = [i for i in range(len(lst)) if i not in ignoreIndexes]
-    return min(indexLst, key=lst.__getitem__)
-
-def maxFromDict(d):
-    maxItem = None
-    for item in d.keys():
-        if maxItem == None or d[item] > d[maxItem]:
-            maxItem = item
-    return maxItem
 
 def letterCount(letter, string):
     count = 0
@@ -79,14 +56,18 @@ def knownFilter(word, guess, result):
             
     return True
 
-def bestGuess(wordlist):
-    probs = [] # Would only represent actual probabilities if divided by (n - 1) 
-    for w1 in wordlist:
-        probs.append(0)
-        for w2 in wordlist:
-            if w1 == w2:
-                continue
-            results = makeGuess(w2, w1)
-            probs[-1] += len([w for w in wordlist if knownFilter(w, w1, results)])
+# assert knownFilter("FIGGY", "BLADE", ".GGGG")
+# assert knownFilter("GLADE", "CUNTS", "GGGGG")
+# assert knownFilter("ABEAT", "CUNTS", ".....")
+# assert knownFilter("GLADE", "DREAM", "Y.YY.")
+# assert knownFilter("GLADE", "BLADE", ".GGGG")
 
-    return wordlist[minIndex(probs)]
+assert knownFilter("GHOST", "BLADE", ".GGGG")
+
+# WORDS = []
+# with open("possibleWords.txt", "r") as guessesFile:
+#     for li in guessesFile.readlines():
+#         WORDS.append(li.replace("\n", "").upper())
+
+# wordlst = [word for word in WORDS if knownFilter(word, "BLADE", ".GGGG")]
+# print(wordlst)
