@@ -38,6 +38,7 @@ def removeFirst(item, lst):
             newLst.append(lst[i])
     return newLst
 
+@cache
 def makeGuess(answer, guess):
     res = ""
     foundYellows = {}
@@ -79,14 +80,14 @@ def knownFilter(word, guess, result):
             
     return True
 
-def bestGuess(wordlist):
-    probs = [] # Would only represent actual probabilities if divided by (n - 1) 
-    for w1 in wordlist:
-        probs.append(0)
-        for w2 in wordlist:
-            if w1 == w2:
-                continue
-            results = makeGuess(w2, w1)
-            probs[-1] += len([w for w in wordlist if knownFilter(w, w1, results)])
+def filterWordList(wordlist, guess, result):
+    return [w for w in wordlist if knownFilter(w, guess, result)]
 
-    return wordlist[minIndex(probs)]
+def findWorstCase(w1, wordlist):
+    worst = 0
+    for w2 in wordlist:
+        result = makeGuess(w1, w2)
+        worst = max(worst, len(filterWordList(wordlist, w2, result)))
+    
+    return worst
+

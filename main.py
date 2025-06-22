@@ -1,4 +1,4 @@
-from bestGuess import bestGuess, knownFilter
+from functions import makeGuess, minIndex, filterWordList, findWorstCase    
 
 WORDS = []
 with open("possibleWords.txt", "r") as guessesFile:
@@ -39,6 +39,18 @@ def guessInput():
                     break
     return guess
 
+def bestGuess(wordlist):
+    worstCaseLen = []
+    for w in wordlist:
+        worstCaseLen.append(findWorstCase(w, wordlist))
+
+    return wordlist[minIndex(worstCaseLen)]
+
+guessResults = {}
+for w1 in WORDS:
+    for w2 in WORDS:
+        guessResults[(w1, w2)] = makeGuess(w1, w2)
+
 if __name__=="__main__":
     wordlst = WORDS
     guess = wordlst[0]
@@ -47,7 +59,7 @@ if __name__=="__main__":
     for i in range(5):
         guess = guessInput()
         result = resultInput()
-        wordlst = [word for word in wordlst if knownFilter(word, guess, result)]
+        wordlst = filterWordList(wordlst, guess, result)
         if len(wordlst) == 0:
             print("No possible solutions")
             break
