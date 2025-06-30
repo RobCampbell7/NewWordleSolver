@@ -6,40 +6,6 @@ with open("possibleAnswers.txt", "r") as guessesFile:
     for li in guessesFile.readlines():
         WORDS.append(li.replace("\n", "").lower())
 
-def resultInput():
-    result = ""
-    valid = False
-    chars = ("G", "Y", ".")
-    while not valid:
-        valid = True
-        result = input("Enter the result : ").upper()
-        if len(result) > 5:
-            print("Invalid input")
-        else:
-            for c in result:
-                if c not in chars:
-                    print("Invalid input")
-                    valid = False
-                    break
-    return result
-
-def guessInput():
-    guess = ""
-    valid = False
-    chars = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
-    while not valid:
-        valid = True
-        guess = input("Enter your guess : ").lower()
-        if len(guess) > 5:
-            print("Invalid input")
-        else:
-            for c in guess:
-                if c not in chars:
-                    print("Invalid input")
-                    valid = False
-                    break
-    return guess
-
 guessLookup = {}
 def findWorstCase(guess, wordlist):
     worst = 0
@@ -82,16 +48,20 @@ def displayWordList(lst, valueLst, lineSize = 8):
     if line != []:
         print(*line, sep=", ")
 
-wordlst = WORDS
 # wordlst = sample(WORDS, 50)
 
 worstCaseLen = []
-i = 0
-for w in wordlst:
+dataFile = open("answersData.csv", "w")
+i = 0 # The index to start at
+for w in WORDS[i:]:
     i += 1
+    value = findWorstCase(w, WORDS)
+    dataFile.write("{0}, {1}\n".format(w, value))
     if i % 10 == 0:
         print(str(i) + " words completed")
-    worstCaseLen.append(findWorstCase(w, wordlst))
+
+dataFile.close()
+    
     
 # bestIndex = minIndex(worstCaseLen)
 # g = wordlst[bestIndex]
@@ -102,25 +72,10 @@ for w in wordlst:
 
 # displayWordList(wordlst, worstCaseLen)
 
-with open("answersData.csv", "w") as dataFile:
-    for i in range(len(wordlst)):
-        dataFile.write("{0}, {1}\n".format(wordlst[i], worstCaseLen[i]))
+# with open("answersData.csv", "w") as dataFile:
+#     for i in range(len(wordlst)):
+#         dataFile.write("{0}, {1}\n".format(wordlst[i], worstCaseLen[i]))
 
 # print()
 # print(g + ": " + str(gScore))
 
-if __name__=="__main__" and False:
-    wordlst = WORDS
-    guess = bestGuess(wordlst)
-    # guess = bestGuess(wordlst)
-    print("  Initial guess : '" + guess.upper() + "'")
-    for i in range(5):
-        guess = guessInput()
-        result = resultInput()
-        wordlst = filterWordList(wordlst, guess, result)
-        if len(wordlst) == 0:
-            print("No possible solutions")
-            break
-        else:
-            # print("\nBest next guess : '" + wordlst[0].upper() + "'")
-            print("\nBest next guess : '" + bestGuess(wordlst).upper() + "'")
